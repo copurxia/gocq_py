@@ -8,7 +8,7 @@ readme = "README.md"
 packages = [{include = "gocq_py"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 flask = {extras = ["async"], version = "^2.2.3"}
 loguru = "^0.6.0"
 gevent = "^22.10.2"
