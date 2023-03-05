@@ -4,7 +4,8 @@ import pymongo
 
 config = BotConfig.load_config()
 client = pymongo.MongoClient(
-    host=config["mongdb"]["host"], port=config["mongdb"]["port"])
+    "mongodb://"+config["mongdb"]["user"]+":" + config["mongdb"]["pwd"]+"@" +
+    config["mongdb"]["host"]+":"+str(config["mongdb"]["port"])+"/bot")
 
 db = client.bot
 collection = db.msg
@@ -27,5 +28,5 @@ def find_msg_by_id(msgid):
 
 if __name__ == '__main__':
     # add_msg(imsg)
-    # find_msg_by_id(-1964103618)
-    pass
+    find_msg_by_id(-1726724172)
+    # pass

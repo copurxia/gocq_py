@@ -44,15 +44,14 @@ async def post_data():
                 uid = request.get_json().get('sender').get('user_id')  # 获取发送者的 QQ 号
                 message = request.get_json().get('raw_message')  # 获取消息内容
                 logger.info("群聊{}的{}发来：{}", gid, uid, message[:20])
-                if config["at"] == True:
-                    if "[CQ:at,qq="+str(config["gocq"]["qq"])+"]" in message:
-                        logger.info("接收到@消息")
-                        await msgserve(message.replace(
-                            "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, gid)
-                elif config["slash"] == True:
-                    if message[0] == "/":
-                        await msgserve(message, uid, gid)
-                else:
+                if config["at"] and "[CQ:at,qq="+str(config["gocq"]["qq"])+"]" in message:
+                    logger.info("接收到@消息")
+                    await msgserve(message.replace(
+                        "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, gid)
+                if config["slash"] and message[0] == "/":
+                    logger.info("接收到/消息")
+                    await msgserve(message, uid, gid)
+                if config["at"] == False and config["slash"] == False:
                     await msgserve(message, uid, gid)
         case "notice":
 

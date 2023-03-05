@@ -7,25 +7,35 @@ import modules
 
 config = BotConfig.load_config()
 
-# 戳一戳
+
+class MsgError(RuntimeError):
+    def __init__(self, arg):
+        self.args = arg
 
 
 def c1c(uid, gid):
     sendMsg("[CQ:poke,qq={}]".format(uid), uid, gid)
+# 戳一戳
 
 
 def sendMsg(msg, uid, gid):
-    #msg = msg.rstrip("\n")
+    data = {}
     if msg == "error":
         msg = config["responseText"]["error"]
     try:
         if gid != None:  # 如果是群聊信息
-            status = requests.get(
-                url='{0}send_group_msg?group_id={1}&message={2}'.format(config["gocq"]["http"], gid, msg))
-            logger.info("发送消息状态：{}", status.text)
+            data = {"group_id": gid, "message": msg}
+            status = requests.post('{0}send_group_msg'.format(
+                config["gocq"]["http"]), data=data)
+            if status.json().get("status") == "failed":
+                raise MsgError(status.json().get("data").get("message"))
         else:
-            requests.get(
-                url='{0}send_private_msg?user_id={1}&message={2}'.format(config["gocq"]["http"], uid, msg))
+            data = {"user_id": uid, "message": msg}
+            status = requests.post('{0}send_private_msg'.format(
+                config["gocq"]["http"]), data=data)
+
+            if status.json().get("status") == "failed":
+                raise MsgError(status.json().get("data").get("message"))
     except Exception as e:
         logger.error("发送消息失败：{}", e)
     else:
@@ -68,9 +78,9 @@ async def msgserve(msg, uid, gid):
 # 测试
 if __name__ == "__main__":
     pass
-    #msgserve("测试", "测试私聊", None)
+    #msgserve("测试", "1935576264", None)
     #msgserve("测试", None, "测试群组")
     #c1c("测试私聊", "测试群组")
     #loop = asyncio.get_event_loop()
-    #loop.run_until_complete(msgserve("下午好", "测试私聊", None))
+    #loop.run_until_complete(sendMsg("测试&测试", "测试私聊", "测试群组"))
     # loop.close()
