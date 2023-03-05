@@ -4,7 +4,9 @@
 
 [lissettecarlr/kuon](https://github.com/lissettecarlr/kuon/)的自用gocq实现
 
-项目使用poetry管理依赖需要3.10以上版本python
+项目使用poetry管理依赖
+
+需要3.10以上版本python
 
 使用mongdb作为消息存储
 
@@ -17,7 +19,9 @@
 ## 使用
 
 gocq、mongodb需要自行安装
+
 安装配置请参考官方文档
+
 先启动本项目再启动gocq
 
 bing与chatgpt使用[acheong08](https://github.com/acheong08)的方案，具体配置文件可参考原项目生成
