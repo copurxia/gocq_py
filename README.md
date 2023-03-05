@@ -19,12 +19,12 @@
 gocq、mongodb需要自行安装
 安装配置请参考官方文档
 先启动本项目再启动gocq
-gocq的配置文件中需要添加
 
 bing与chatgpt使用[acheong08](https://github.com/acheong08)的方案，具体配置文件可参考原项目生成
 
 彩云小译的API需要自行申请
 
+gocq的配置文件中需要添加
 ```yaml
 - http: # HTTP 通信设置
       address: 0.0.0.0:5700 # HTTP监听地址
@@ -41,6 +41,10 @@ bing与chatgpt使用[acheong08](https://github.com/acheong08)的方案，具体�
           retries-interval: 1500 # 重试时间，单位毫秒，0 时立即
 ```
 
+执行以下命令进行安装
+
+第一次运行可能耗时较久
+
 ```bash
 git clone https://github.com/copurxia/gocq_py.git
 cd gocq_py
@@ -51,4 +55,5 @@ poetry run python index.py
 
 ## 附加
 虽然是自用项目，但也欢迎pr
+
 如果有什么问题可以提issue
