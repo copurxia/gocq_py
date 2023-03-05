@@ -1,7 +1,10 @@
 from loguru import logger
+from cfg.botConfig import BotConfig
 import pymongo
 
-client = pymongo.MongoClient(host='localhost', port=27017)
+config = BotConfig.load_config()
+client = pymongo.MongoClient(
+    host=config["mongdb"]["host"], port=config["mongdb"]["port"])
 
 db = client.bot
 collection = db.msg
@@ -24,4 +27,5 @@ def find_msg_by_id(msgid):
 
 if __name__ == '__main__':
     # add_msg(imsg)
-    find_msg_by_id(-1964103618)
+    # find_msg_by_id(-1964103618)
+    pass

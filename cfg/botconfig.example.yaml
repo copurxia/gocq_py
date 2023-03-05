@@ -14,3 +14,6 @@ responseText:
 caiyunToken: sdjbkgdjk #这里填写你的彩云天气token
 at: true #是否开启at
 slash: true #是否开启斜杠命令
+mongdb: #mongodb数据库配置
+  host: localhost #数据库地址
+  port: 27017 #数据库端口
