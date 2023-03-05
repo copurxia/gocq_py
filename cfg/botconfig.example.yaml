@@ -17,3 +17,5 @@ slash: true #是否开启斜杠命令
 mongdb: #mongodb数据库配置
   host: localhost #数据库地址
   port: 27017 #数据库端口
+  user: "bot" #数据库用户名
+  pwd: "12345678" #数据库密码 
