@@ -26,14 +26,14 @@ def sendMsg(msg, uid, gid):
         if gid != None:  # 如果是群聊信息
             data = {"group_id": gid, "message": msg}
             status = requests.post('{0}send_group_msg'.format(
-                config["gocq"]["http"]), data=data)
+                config["gocq"]["http"]), json=data)
             if status.json().get("status") == "failed":
                 logger.error("发送消息失败: {}", msg)
                 raise MsgError(status.json().get("data").get("wording"))
         else:
             data = {"user_id": uid, "message": msg}
             status = requests.post('{0}send_private_msg'.format(
-                config["gocq"]["http"]), data=data)
+                config["gocq"]["http"]), json=data)
             if status.json().get("status") == "failed":
                 logger.error("发送消息失败: {}", msg)
                 raise MsgError(status.json().get("data").get("wording"))
