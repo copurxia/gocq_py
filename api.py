@@ -82,6 +82,4 @@ if __name__ == "__main__":
     #msgserve("测试", "1935576264", None)
     #msgserve("测试", None, "测试群组")
     #c1c("测试私聊", "测试群组")
-    #loop = asyncio.get_event_loop()
-    #loop.run_until_complete(sendMsg("测试&测试", "测试私聊", "测试群组"))
-    # loop.close()
+    asyncio.run(sendMsg("测试&测试", "测试私聊", "测试群组"))
