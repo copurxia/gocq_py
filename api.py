@@ -27,17 +27,17 @@ def sendMsg(msg, uid, gid):
             data = {"group_id": gid, "message": msg}
             status = requests.post('{0}send_group_msg'.format(
                 config["gocq"]["http"]), json=data)
-            logger.info("发送消息状态：{}", status)
+            logger.info("发送消息状态：{}", status.json())
             if status.json().get("status") == "failed":
                 logger.error("发送消息失败: {}", msg)
-                raise MsgError(status.json().get("data").get("wording"))
+                raise MsgError(status.json().get("wording"))
         else:
             data = {"user_id": uid, "message": msg}
             status = requests.post('{0}send_private_msg'.format(
                 config["gocq"]["http"]), json=data)
             if status.json().get("status") == "failed":
                 logger.error("发送消息失败: {}", msg)
-                raise MsgError(status.json().get("data").get("wording"))
+                raise MsgError(status.json().get("wording"))
     except Exception as e:
         logger.error("发送消息失败：{}", e)
     else:
