@@ -38,14 +38,16 @@ class bingGPT:
             return ""
         async with self.lock:
             #resp = ""
+            startid = 0
             try:
                 respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative))
                 resp = respo["item"]["messages"][1]["adaptiveCards"][0]["body"][0]["text"]
+                startid = resp.find("你好")
             except Exception as e:
                 resp = "error"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
                 self.status = False
-            return resp
+            return resp[startid:]
 
     async def close(self):
         await self.thinking.close()
