@@ -28,14 +28,15 @@ def sendMsg(msg, uid, gid):
             status = requests.post('{0}send_group_msg'.format(
                 config["gocq"]["http"]), data=data)
             if status.json().get("status") == "failed":
-                raise MsgError(status.json().get("data").get("message"))
+                logger.error("发送消息失败: {}", msg)
+                raise MsgError(status.json().get("data").get("wording"))
         else:
             data = {"user_id": uid, "message": msg}
             status = requests.post('{0}send_private_msg'.format(
                 config["gocq"]["http"]), data=data)
-
             if status.json().get("status") == "failed":
-                raise MsgError(status.json().get("data").get("message"))
+                logger.error("发送消息失败: {}", msg)
+                raise MsgError(status.json().get("data").get("wording"))
     except Exception as e:
         logger.error("发送消息失败：{}", e)
     else:
