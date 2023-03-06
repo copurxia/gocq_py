@@ -43,6 +43,8 @@ class bingGPT:
                 respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative))
                 resp = respo["item"]["messages"][1]["adaptiveCards"][0]["body"][0]["text"]
                 startid = resp.find("你好")
+                logger.info("startid：{}".format(startid))
+                logger.info("message:{}".format(resp))
             except Exception as e:
                 resp = "error"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
