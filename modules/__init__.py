@@ -24,7 +24,8 @@ def loadDefault():
         thinking = chatGPTv3
     else:
         logger.warning("未知的默认模块：{}".format(config["default"]))
-    thinking.activate()
+    if thinking.status == False:
+        thinking.activate()
 
 # 关键词回应
 
@@ -52,8 +53,6 @@ async def keyresponse(msg):
     resp = "error"
     global thinking
     keywords(msg)
-    if thinking.status == False:
-        thinking.activate()
     logger.info("使用模块：{}".format(thinking.name))
     resp = await thinking.response(msg)
     return resp
