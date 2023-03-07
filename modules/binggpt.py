@@ -41,7 +41,7 @@ class bingGPT:
             #resp = ""
             startid = 0
             try:
-                respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.precise))
+                respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative))
                 resp = respo["item"]["messages"][1]["adaptiveCards"][0]["body"][0]["text"]
                 rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
                 resp = re.sub(rmurl, '', resp)
