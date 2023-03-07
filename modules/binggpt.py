@@ -4,6 +4,7 @@ from loguru import logger
 import asyncio
 from cfg.botConfig import OpenAiConfig
 import os
+import re
 
 
 class bingGPT:
@@ -42,14 +43,14 @@ class bingGPT:
             try:
                 respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative))
                 resp = respo["item"]["messages"][1]["adaptiveCards"][0]["body"][0]["text"]
-                startid = resp.find("你好")
-                logger.info("startid：{}".format(startid))
+                rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
+                resp = re.sub(rmurl, '', resp)
                 logger.info("message:{}".format(resp))
             except Exception as e:
                 resp = "error"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
                 self.status = False
-            return resp[startid:]
+            return resp
 
     async def close(self):
         await self.thinking.close()
