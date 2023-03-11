@@ -50,11 +50,11 @@ class bingGPT:
                 rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
                 resp = re.sub(rmurl, '', resp)
                 # logger.info("message:{}".format(resp))
-                self.busy = False
             except Exception as e:
                 resp = "error"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
                 self.status = False
+            self.busy = False
             return resp
 
     async def close(self):
