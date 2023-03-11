@@ -2,7 +2,7 @@ import requests
 import asyncio
 from loguru import logger
 from cfg.botConfig import BotConfig
-from datebase import find_msg_by_id
+from datebase import find_msg_by_id, add_botmsg, find_botmsg_by_id
 import modules
 
 config = BotConfig.load_config()
@@ -30,6 +30,9 @@ def sendMsg(msg, uid, gid):
             if status.json().get("status") == "failed":
                 logger.error("发送消息失败: {}", msg)
                 raise MsgError(status.json().get("wording"))
+            else:
+                msgid = status.json().get("data").get("message_id")
+                add_botmsg(msg, msgid, uid, gid)
         else:
             data = {"user_id": uid, "message": msg}
             status = requests.post('{0}send_private_msg'.format(
@@ -37,10 +40,13 @@ def sendMsg(msg, uid, gid):
             if status.json().get("status") == "failed":
                 logger.error("发送消息失败: {}", msg)
                 raise MsgError(status.json().get("wording"))
+            else:
+                msgid = status.json().get("data").get("message_id")
+                add_botmsg(msg, msgid, uid, gid)
     except Exception as e:
         logger.error("发送消息失败：{}", e)
     else:
-        logger.info("发送消息成功：{}", msg)
+        logger.info("发送消息成功：{}", msgid)
 
 
 # 更高优先级的回应
@@ -70,6 +76,13 @@ async def msgserve(msg, uid, gid):
                 ruid = msgo['sender']['user_id']
                 msg = msg.replace("[CQ:at,qq="+str(ruid)+"]", "")
                 #logger.info("处理消息内容：{}", msg)
+            else:
+                msgo = find_botmsg_by_id(msid)
+                if msgo != None:
+                    msg += "\n"+msgo["msg"]
+                    ruid = msgo['uid']
+                    msg = msg.replace("[CQ:at,qq="+str(ruid)+"]", "")
+                    #logger.info("处理消息内容：{}", msg)
         resp = await modules.keyresponse(msg)
         sendMsg(resp, uid, gid)
         if gid != None:

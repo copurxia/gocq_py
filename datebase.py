@@ -8,21 +8,38 @@ client = pymongo.MongoClient(
     config["mongdb"]["host"]+":"+str(config["mongdb"]["port"])+"/bot")
 
 db = client.bot
-collection = db.msg
+coll_msg = db.msg
+coll_botmsg = db.botmsg
+
+
+def add_botmsg(msg, msgid, uid, gid):
+    msg_json = {"uid": uid, "msgid": msgid, "gid": gid, "msg": msg}
+    result = coll_botmsg.insert_one(msg_json)
+    logger.info("bot消息加载到数据库：{}", result.inserted_id)
 
 
 def add_msg(msg):
-    result = collection.insert_one(msg)
+    result = coll_msg.insert_one(msg)
     logger.info("加载到数据库：{}", result.inserted_id)
 
 
 def find_msg_by_id(msgid):
     msg = {"message_id": msgid}
-    result = collection.find_one(msg)
+    result = coll_msg.find_one(msg)
     if result != None:
         logger.info("查询到数据库：{}", result["_id"])
     else:
         logger.info("未查询到数据库")
+    return result
+
+
+def find_botmsg_by_id(msgid):
+    msg = {"msgid": msgid}
+    result = coll_botmsg.find_one(msg)
+    if result != None:
+        logger.info("查询到数据库：{}", result["_id"])
+    else:
+        logger.info("未查询到发言")
     return result
 
 

@@ -5,6 +5,7 @@ from gevent import pywsgi
 from api import msgserve
 from datebase import find_msg_by_id, add_msg
 from cfg.botConfig import BotConfig
+import threading
 
 # 加载配置文件
 try:
@@ -15,34 +16,43 @@ except Exception as e:
 
 app = Flask(__name__)
 
-# 重复消息排除
-msgid = set()
 
-# 服务器处理消息
+class postserveThread(threading.Thread):
+    def __init__(self, postjson):
+        threading.Thread.__init__(self)
+        self.postjson = postjson
+
+    def run(self):
+        try:
+            asyncio.run(postserve(self.postjson))
+        except Exception as e:
+            logger.error("服务器处理消息失败：{}", e)
 
 
-@app.route('/', methods=["POST"])
-async def post_data():
-    global msgid
-    # 跳过心跳事件
-    if request.get_json().get('post_type') == "meta_event" and request.get_json().get('meta_event_type') == "heartbeat":
+# 处理线程函数
+
+
+async def postserve(postjson):
+    # 无视心跳包
+    if postjson.get('post_type') == "meta_event" and postjson.get('meta_event_type') == "heartbeat":
         return 'OK'
-    if find_msg_by_id(request.get_json().get('message_id')) != None:
+    # 无视重复消息并记录
+    if find_msg_by_id(postjson.get('message_id')) != None:
         return 'OK'
     else:
-        add_msg(request.get_json())
-    match request.get_json().get('post_type'):
+        add_msg(postjson)
+    match postjson.get('post_type'):
         case "message":
-            if request.get_json().get('message_type') == 'private':
-                uid = request.get_json().get('sender').get('user_id')  # 获取发送者的 QQ 号
-                message = request.get_json().get('raw_message')  # 获取消息内容
+            if postjson.get('message_type') == 'private':
+                uid = postjson.get('sender').get('user_id')  # 获取发送者的 QQ 号
+                message = postjson.get('raw_message')  # 获取消息内容
                 logger.info("{}发来：{}", uid, message[:20])
                 await msgserve(message.replace(
                     "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, None)
-            elif request.get_json().get('message_type') == 'group':  # 如果是群聊信息
-                gid = request.get_json().get('group_id')  # 获取群号
-                uid = request.get_json().get('sender').get('user_id')  # 获取发送者的 QQ 号
-                message = request.get_json().get('raw_message')  # 获取消息内容
+            elif postjson.get('message_type') == 'group':  # 如果是群聊信息
+                gid = postjson.get('group_id')  # 获取群号
+                uid = postjson.get('sender').get('user_id')  # 获取发送者的 QQ 号
+                message = postjson.get('raw_message')  # 获取消息内容
                 logger.info("群聊{}的{}发来：{}", gid, uid, message[:20])
                 if config["at"] and "[CQ:at,qq="+str(config["gocq"]["qq"])+"]" in message:
                     logger.info("接收到@消息")
@@ -54,10 +64,15 @@ async def post_data():
                 if config["at"] == False and config["slash"] == False:
                     await msgserve(message, uid, gid)
         case "notice":
-
             pass
         case default:
             pass
+    # 服务器处理消息
+
+
+@app.route('/', methods=["POST"])
+async def post_data():
+    postserveThread(request.get_json()).start()
     return 'OK'
 
 
@@ -73,5 +88,3 @@ if __name__ == '__main__':
     except Exception as e:
         logger.error("服务器启动失败：{}", e)
         exit(1)
-    else:
-        logger.info("服务器启动成功")

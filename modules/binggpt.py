@@ -3,6 +3,7 @@ from EdgeGPT import Chatbot, ConversationStyle
 from loguru import logger
 import asyncio
 from cfg.botConfig import OpenAiConfig
+from time import sleep
 import os
 import re
 
@@ -15,6 +16,7 @@ class bingGPT:
         self.thinking = None
         self.config = OpenAiConfig.load_config()
         self.status = False
+        self.busy = False
         self.keyword = ["/bing", "/必应"]
 
     def activate(self):
@@ -35,17 +37,20 @@ class bingGPT:
 
     # message：对话
     async def response(self, message) -> str:
+        while self.busy:
+            sleep(6)
+            logger.info("bingChat 正在忙碌中...")
+        self.busy = True
         if (self.thinking == None):
             return ""
         async with self.lock:
-            #resp = ""
-            startid = 0
             try:
                 respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative))
                 resp = respo["item"]["messages"][1]["adaptiveCards"][0]["body"][0]["text"]
                 rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
                 resp = re.sub(rmurl, '', resp)
-                logger.info("message:{}".format(resp))
+                # logger.info("message:{}".format(resp))
+                self.busy = False
             except Exception as e:
                 resp = "error"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
