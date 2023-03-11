@@ -37,8 +37,8 @@ class bingGPT:
 
     # message：对话
     async def response(self, message) -> str:
-        while self.busy:
-            sleep(6)
+        if self.busy:
+            sleep(15)
             logger.info("bingChat 正在忙碌中...")
         self.busy = True
         if (self.thinking == None):
