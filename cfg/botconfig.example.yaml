@@ -11,6 +11,7 @@ responseText:
   tooFast: 太快了，要溢出来了~ ❤
   error: 太坏了~已经溢出来了 >_<
   moduleStatus: "{}还活着捏~"
+  permissionDenied: "权限不足"
 caiyunToken: sdjbkgdjk #这里填写你的彩云翻译token
 at: true #是否开启at
 slash: true #是否开启斜杠命令

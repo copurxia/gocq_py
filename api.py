@@ -32,7 +32,6 @@ def sendMsg(msg, uid, gid):
                 raise MsgError(status.json().get("wording"))
             else:
                 msgid = status.json().get("data").get("message_id")
-                add_botmsg(msg, msgid, uid, gid)
         else:
             data = {"user_id": uid, "message": msg}
             status = requests.post('{0}send_private_msg'.format(
@@ -42,11 +41,12 @@ def sendMsg(msg, uid, gid):
                 raise MsgError(status.json().get("wording"))
             else:
                 msgid = status.json().get("data").get("message_id")
-                add_botmsg(msg, msgid, uid, gid)
     except Exception as e:
         logger.error("发送消息失败：{}", e)
     else:
         logger.info("发送消息成功：{}", msgid)
+        if msgid != 0:
+            add_botmsg(msg, msgid, uid, gid)
 
 
 # 更高优先级的回应
@@ -83,7 +83,7 @@ async def msgserve(msg, uid, gid):
                     ruid = msgo['uid']
                     msg = msg.replace("[CQ:at,qq="+str(ruid)+"]", "")
                     #logger.info("处理消息内容：{}", msg)
-        resp = await modules.keyresponse(msg)
+        resp = await modules.keyresponse(msg, uid, gid)
         sendMsg(resp, uid, gid)
         if gid != None:
             c1c(uid, gid)
