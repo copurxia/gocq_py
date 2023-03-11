@@ -1,21 +1,31 @@
 gocq:
-  qq: 12345 #这里填写你的QQ号
-  verifyKey: "" #这里填写你的gocq的verifyKey (未支持)
+  qq: 12345 #你的QQ号
+  verifyKey: ""
   http: "http://127.0.0.1:5700/" #gocq的http地址
   rhttp: 8000 #gocq反向http的端口设置
-default: bingChat #默认聊天机器人
-responseTimeout: 25 #聊天机器人响应超时时间 (未支持)
-responseText:
+default: bingChat #默认模块
+responseText: #回复文本
   ping: 我在呢，我一直都在
   nullText: 说不出来了o(╥﹏╥)o
   tooFast: 太快了，要溢出来了~ ❤
   error: 太坏了~已经溢出来了 >_<
   moduleStatus: "{}还活着捏~"
-caiyunToken: sdjbkgdjk #这里填写你的彩云翻译token
+  permissionDenied: "{}已经装不下你了~"
+caiyunToken: vusyffgtcy #彩云天气token 这是一个假token，请自行前往官网申请
 at: true #是否开启at
 slash: true #是否开启斜杠命令
 mongdb: #mongodb数据库配置
   host: localhost #数据库地址
   port: 27017 #数据库端口
   user: "bot" #数据库用户名
-  pwd: "12345678" #数据库密码 
+  pwd: "47795485" #数据库密码
+permission: #权限设置
+  user: #用户列表
+    - uid: 123456
+      modules: #拥有的模块列表
+        - bingChat
+        - caiyun
+  group: #群组权限
+    - gid: 654321 #群组列表
+      modules: #拥有的模块列表
+        - caiyun

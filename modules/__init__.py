@@ -14,7 +14,7 @@ CaiYun = caiyun.caiyun()
 chatGPTv3 = chatgptv3.chatGPTv3()
 
 
-def loadDefault():
+def loadDefault():  # 加载默认模块
     global thinking
     if config["default"] == bingGPT.name:
         thinking = bingGPT
@@ -25,10 +25,8 @@ def loadDefault():
     else:
         logger.warning("未知的默认模块：{}".format(config["default"]))
 
-# 关键词回应
 
-
-def keywords(msg):
+def keywords(msg):  # 关键词判断
     global thinking
     Default = True
     for keywords in CaiYun.keyword:
@@ -47,12 +45,31 @@ def keywords(msg):
         loadDefault()
 
 
-async def keyresponse(msg):
+def per_veri(moudule, uid, gid):  # 权限验证
+    if uid != None:
+        for i in config["permission"]["user"]:
+            logger.info("i：{}".format(i))
+            if i["uid"] == uid and moudule in i["modules"]:
+                logger.info("权限验证成功：{} {}", moudule, uid)
+                return True
+    if gid != None:
+        for i in config["permission"]["group"]:
+            logger.info("i：{}".format(i))
+            if i["gid"] == gid and moudule in i["modules"]:
+                logger.info("权限验证成功：{} {}", moudule, gid)
+                return True
+    logger.info("权限验证失败：{} {} {}", moudule, uid, gid)
+    return False
+
+
+async def keyresponse(msg, uid, gid):  # 关键词回应
     resp = "error"
     global thinking
     keywords(msg)
     if thinking.status == False:
         thinking.activate()
+    if not per_veri(thinking.name, uid, gid):
+        return config["responseText"]["permissionDenied"]
     logger.info("使用模块：{}".format(thinking.name))
     resp = await thinking.response(msg)
     return resp
