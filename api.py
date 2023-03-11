@@ -8,16 +8,17 @@ import modules
 config = BotConfig.load_config()
 
 
-class MsgError(RuntimeError):  # 消息异常
+class MsgError(RuntimeError):
     def __init__(self, arg):
         self.args = arg
 
 
-def c1c(uid, gid):  # 戳一戳
+def c1c(uid, gid):
     sendMsg("[CQ:poke,qq={}]".format(uid), uid, gid)
+# 戳一戳
 
 
-def sendMsg(msg, uid, gid):  # 发送消息
+def sendMsg(msg, uid, gid):
     data = {}
     if msg == "error":
         msg = config["responseText"]["error"]
@@ -31,6 +32,7 @@ def sendMsg(msg, uid, gid):  # 发送消息
                 raise MsgError(status.json().get("wording"))
             else:
                 msgid = status.json().get("data").get("message_id")
+                add_botmsg(msg, msgid, uid, gid)
         else:
             data = {"user_id": uid, "message": msg}
             status = requests.post('{0}send_private_msg'.format(
@@ -40,15 +42,17 @@ def sendMsg(msg, uid, gid):  # 发送消息
                 raise MsgError(status.json().get("wording"))
             else:
                 msgid = status.json().get("data").get("message_id")
+                add_botmsg(msg, msgid, uid, gid)
     except Exception as e:
         logger.error("发送消息失败：{}", e)
     else:
         logger.info("发送消息成功：{}", msgid)
-        if msgid != 0:
-            add_botmsg(msg, msgid, uid, gid)
 
 
-async def msgserve(msg, uid, gid):  # 更高优先级的回应
+# 更高优先级的回应
+
+
+async def msgserve(msg, uid, gid):
     if msg == "测试":
         sendMsg(config["responseText"]["ping"], uid, gid)
     elif msg == "确认模块状态":
@@ -79,7 +83,7 @@ async def msgserve(msg, uid, gid):  # 更高优先级的回应
                     ruid = msgo['uid']
                     msg = msg.replace("[CQ:at,qq="+str(ruid)+"]", "")
                     #logger.info("处理消息内容：{}", msg)
-        resp = await modules.keyresponse(msg, uid, gid)
+        resp = await modules.keyresponse(msg)
         sendMsg(resp, uid, gid)
         if gid != None:
             c1c(uid, gid)
