@@ -48,12 +48,12 @@ def keywords(msg):  # 关键词判断
 def permission_ver(module, uid, gid):  # 权限验证
     if gid != None:
         for i in config["permission"]["group"]:
-            if i["group_id"] == gid and module in i["modules"]:
+            if i["gid"] == gid and module in i["modules"]:
                 logger.info("权限验证通过：{}-{}".format(gid, module))
                 return True
     if uid != None:
         for i in config["permission"]["user"]:
-            if i["user_id"] == uid and module in i["modules"]:
+            if i["uid"] == uid and module in i["modules"]:
                 logger.info("权限验证通过：{}-{}".format(uid, module))
                 return True
     logger.warning("权限验证失败：{}-{}".format(uid, module))
