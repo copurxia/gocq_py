@@ -50,6 +50,7 @@ def sendMsg(msg, uid, gid):
 
 
 def repeat(msg, uid, gid):
+    logger.info("复读：{}", gid)
     if find_repeatmsg(uid, gid):
         sendMsg(msg, uid, gid)
         mark_repeatmsg(msg, uid, gid)
