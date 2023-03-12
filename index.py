@@ -2,7 +2,8 @@ import asyncio
 from flask import Flask, request
 from loguru import logger
 from gevent import pywsgi
-from api import msgserve
+from api import msgserve, repeat
+from modules import permission_ver
 from datebase import find_msg_by_id, add_msg
 from cfg.botConfig import BotConfig
 import threading
@@ -54,6 +55,8 @@ async def postserve(postjson):
                 uid = postjson.get('sender').get('user_id')  # 获取发送者的 QQ 号
                 message = postjson.get('raw_message')  # 获取消息内容
                 logger.info("群聊{}的{}发来：{}", gid, uid, message[:20])
+                if permission_ver("repeat", uid, gid):  # 复读模块
+                    repeat(message, uid, gid)
                 if config["at"] and "[CQ:at,qq="+str(config["gocq"]["qq"])+"]" in message:
                     logger.info("接收到@消息")
                     await msgserve(message.replace(
