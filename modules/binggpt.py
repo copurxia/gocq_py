@@ -16,7 +16,6 @@ class bingGPT:
         self.thinking = None
         self.config = OpenAiConfig.load_config()
         self.status = False
-        self.busy = False
         self.keyword = ["/bing", "/必应"]
 
     def activate(self):
@@ -37,10 +36,6 @@ class bingGPT:
 
     # message：对话
     async def response(self, message) -> str:
-        if self.busy:
-            sleep(15)
-            logger.info("bingChat 正在忙碌中...")
-        self.busy = True
         if (self.thinking == None):
             return ""
         async with self.lock:
@@ -54,7 +49,6 @@ class bingGPT:
                 resp = "error"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
                 self.status = False
-            self.busy = False
             return resp
 
     async def close(self):
