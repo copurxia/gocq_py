@@ -48,13 +48,17 @@ def sendMsg(msg, uid, gid):
         if msgid != 0:
             add_botmsg(msg, msgid, uid, gid)
 
-def repeat(msg,uid,gid):
+
+def repeat(msg, uid, gid):
     if find_repeatmsg(uid, gid):
         sendMsg(msg, uid, gid)
         mark_repeatmsg(msg, uid, gid)
     add_repeatmsg(msg, uid, gid)
 
+
 async def msgserve(msg, uid, gid):
+    if modules.permission_ver("repeat", uid, gid):  # 复读模块
+        repeat(msg, uid, gid)
     if msg == "测试":  # 更高优先级的回应
         sendMsg(config["responseText"]["ping"], uid, gid)
     elif msg == "确认模块状态":
