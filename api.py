@@ -2,7 +2,7 @@ import requests
 import asyncio
 from loguru import logger
 from cfg.botConfig import BotConfig
-from datebase import find_msg_by_id, add_botmsg, find_botmsg_by_id
+from datebase import find_msg_by_id, add_botmsg, find_botmsg_by_id, find_repeatmsg, add_repeatmsg, mark_repeatmsg
 import modules
 
 config = BotConfig.load_config()
@@ -48,12 +48,14 @@ def sendMsg(msg, uid, gid):
         if msgid != 0:
             add_botmsg(msg, msgid, uid, gid)
 
-
-# 更高优先级的回应
-
+def repeat(msg,uid,gid):
+    if find_repeatmsg(uid, gid):
+        sendMsg(msg, uid, gid)
+        mark_repeatmsg(msg, uid, gid)
+    add_repeatmsg(msg, uid, gid)
 
 async def msgserve(msg, uid, gid):
-    if msg == "测试":
+    if msg == "测试":  # 更高优先级的回应
         sendMsg(config["responseText"]["ping"], uid, gid)
     elif msg == "确认模块状态":
         if modules.thinking == None:
