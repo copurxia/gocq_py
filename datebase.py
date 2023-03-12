@@ -18,9 +18,10 @@ def find_repeatmsg(uid, gid):  # 查询重复消息
     result = coll_repeatmsg.find_one(msg_json)
     if result != None:
         logger.info("查询到数据库：{}", result["_id"])
+        return result["repeated"]
     else:
         logger.info("未查询到重复消息")
-    return result["repeated"]
+        return False
 
 
 def add_repeatmsg(msg,  uid, gid):  # 添加重复消息
