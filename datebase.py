@@ -14,21 +14,17 @@ coll_repeatmsg = db.repeatmsg
 
 
 def find_repeatmsg(uid, gid):  # 查询重复消息
-    msg_json = {"uid": uid, "gid": gid}
+    msg_json = {"gid": gid}
     result = coll_repeatmsg.find_one(msg_json)
-    if result != None:
-        logger.info("查询到数据库：{}", result["_id"])
-        return result["repeated"]
-    else:
+    if result == None:
         logger.info("未查询到重复消息")
-        return False
+    return result
 
 
 def add_repeatmsg(msg,  uid, gid):  # 添加重复消息
-    coll_repeatmsg.delete_one({"uid": uid, "gid": gid})
+    coll_repeatmsg.delete_one({"gid": gid})
     msg_json = {"uid": uid, "gid": gid, "msg": msg, "repeated": False}
-    result = coll_repeatmsg.insert_one(msg_json)
-    logger.info("重复消息加载到数据库：{}", result.inserted_id)
+    coll_repeatmsg.insert_one(msg_json)
 
 
 def mark_repeatmsg(msg, uid, gid):  # 标记为已复读

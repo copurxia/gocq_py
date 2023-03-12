@@ -51,13 +51,13 @@ def permission_ver(module, uid, gid):  # 权限验证
             if i["gid"] == gid and module in i["modules"]:
                 logger.info("权限验证通过：{}-{}".format(gid, module))
                 return True
-    logger.warning("权限验证失败：{}-{}".format(gid, module))
+    #logger.warning("权限验证失败：{}-{}".format(gid, module))
     if uid != None:
         for i in config["permission"]["user"]:
             if i["uid"] == uid and module in i["modules"]:
                 logger.info("权限验证通过：{}-{}".format(uid, module))
                 return True
-    logger.warning("权限验证失败：{}-{}".format(uid, module))
+    #logger.warning("权限验证失败：{}-{}".format(uid, module))
     return False
 
 
