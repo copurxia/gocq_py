@@ -54,7 +54,7 @@ def repeat(msg, uid, gid):
     if rep_msg != None and rep_msg["msg"] == msg and rep_msg["repeated"] == False:
         sendMsg(rep_msg["msg"], uid, gid)
         mark_repeatmsg(msg,  gid)
-    elif rep_msg == None:
+    elif rep_msg == None or rep_msg["msg"] != msg:
         add_repeatmsg(msg, gid)
 
 
