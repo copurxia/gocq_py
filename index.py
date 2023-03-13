@@ -2,9 +2,9 @@ import asyncio
 from flask import Flask, request
 from loguru import logger
 from gevent import pywsgi
-from api import msgserve, repeat
+from api import msgserve, repeat, c1c
 from modules import permission_ver
-from datebase import find_msg_by_id, add_msg
+from datebase import find_msg_by_id, add_msg, add_offline_file
 from cfg.botConfig import BotConfig
 import threading
 
@@ -37,13 +37,13 @@ async def postserve(postjson):
     # 无视心跳包
     if postjson.get('post_type') == "meta_event" and postjson.get('meta_event_type') == "heartbeat":
         return 'OK'
-    # 无视重复消息并记录
-    if find_msg_by_id(postjson.get('message_id')) != None:
-        return 'OK'
-    else:
-        add_msg(postjson)
     match postjson.get('post_type'):
         case "message":
+            # 无视重复消息并记录
+            if find_msg_by_id(postjson.get('message_id')) != None:
+                return 'OK'
+            else:
+                add_msg(postjson)
             if postjson.get('message_type') == 'private':
                 uid = postjson.get('sender').get('user_id')  # 获取发送者的 QQ 号
                 message = postjson.get('raw_message')  # 获取消息内容
@@ -67,7 +67,21 @@ async def postserve(postjson):
                 if config["at"] == False and config["slash"] == False:
                     await msgserve(message, uid, gid)
         case "notice":
-            pass
+            #logger.info("接收到通知：{}", postjson)
+            match postjson.get('notice_type'):
+                case "notify":
+                    if postjson.get('sub_type') == "poke":
+                        if postjson.get('target_id') == config["gocq"]["qq"]:
+                            c1c(postjson.get('user_id'),
+                                postjson.get('group_id'))
+                case "offline_file":
+                    logger.info("接收到{}离线文件：{}", postjson.get(
+                        'user_id'), postjson.get('file').get('name'))
+                    add_offline_file(postjson.get('user_id'),
+                                     postjson.get('time'),
+                                     postjson.get('file').get('name'),
+                                     postjson.get('file').get('size'),
+                                     postjson.get('file').get('url'))
         case default:
             pass
     # 服务器处理消息

@@ -11,6 +11,7 @@ db = client.bot
 coll_msg = db.msg
 coll_botmsg = db.botmsg
 coll_repeatmsg = db.repeatmsg
+coll_offline_file = db.offline_file
 
 
 def find_repeatmsg(gid):  # 查询重复消息
@@ -62,6 +63,12 @@ def find_botmsg_by_id(msgid):
     else:
         logger.info("未查询到发言")
     return result
+
+
+def add_offline_file(uid, time, name, size, url):
+    result = coll_offline_file.insert_one(
+        {"uid": uid, "time": time, "name": name, "size": size, "url": url})
+    logger.info("加载离线文件到数据库：{}", result.inserted_id)
 
 
 if __name__ == '__main__':
