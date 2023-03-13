@@ -13,7 +13,7 @@ coll_botmsg = db.botmsg
 coll_repeatmsg = db.repeatmsg
 
 
-def find_repeatmsg(uid, gid):  # 查询重复消息
+def find_repeatmsg(gid):  # 查询重复消息
     msg_json = {"gid": gid}
     result = coll_repeatmsg.find_one(msg_json)
     if result == None:
@@ -21,16 +21,16 @@ def find_repeatmsg(uid, gid):  # 查询重复消息
     return result
 
 
-def add_repeatmsg(msg,  uid, gid):  # 添加重复消息
+def add_repeatmsg(msg,   gid):  # 添加重复消息
     coll_repeatmsg.delete_one({"gid": gid})
-    msg_json = {"uid": uid, "gid": gid, "msg": msg, "repeated": False}
+    msg_json = {"gid": gid, "msg": msg, "repeated": False}
     coll_repeatmsg.insert_one(msg_json)
 
 
-def mark_repeatmsg(msg, uid, gid):  # 标记为已复读
-    msgjson = {"uid": uid, "gid": gid, "msg": msg}
+def mark_repeatmsg(msg,  gid):  # 标记为已复读
+    msgjson = {"gid": gid, "msg": msg}
     coll_repeatmsg.update_one(msgjson, {"$set": {"repeated": True}})
-    logger.info("已复读：{} {}", uid, gid)
+    logger.info("已复读：{}", gid)
 
 
 def add_botmsg(msg, msgid, uid, gid):
@@ -66,5 +66,7 @@ def find_botmsg_by_id(msgid):
 
 if __name__ == '__main__':
     # add_msg(imsg)
-    find_msg_by_id(-1726724172)
+    # find_msg_by_id(-1726724172)
+    #add_repeatmsg("123",  123)
+    mark_repeatmsg("123",  123)
     # pass
