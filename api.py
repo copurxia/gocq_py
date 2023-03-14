@@ -18,6 +18,13 @@ def c1c(uid, gid):
 # 戳一戳
 
 
+def upload_private_file(uid, path, name):
+    data = {"user_id": uid, "file": path, "name": name}
+    status = requests.post('{0}send_private_msg'.format(
+        config["gocq"]["http"]), json=data)
+    logger.info("上传文件状态：{}", status.json().get("status"))
+
+
 def sendMsg(msg, uid, gid):
     data = {}
     if msg == "error":
