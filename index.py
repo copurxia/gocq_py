@@ -1,10 +1,11 @@
 import asyncio
+from json import dumps
 from flask import Flask, request
 from loguru import logger
 from gevent import pywsgi
-from api import msgserve, repeat, c1c
+from api import msgserve, repeat, c1c, sendMsg
 from modules import permission_ver
-from datebase import find_msg_by_id, add_msg, add_offline_file
+import datebase
 from cfg.botConfig import BotConfig
 import threading
 
@@ -40,10 +41,10 @@ async def postserve(postjson):
     match postjson.get('post_type'):
         case "message":
             # 无视重复消息并记录
-            if find_msg_by_id(postjson.get('message_id')) != None:
+            if datebase.find_msg_by_id(postjson.get('message_id')) != None:
                 return 'OK'
             else:
-                add_msg(postjson)
+                datebase.add_msg(postjson)
             if postjson.get('message_type') == 'private':
                 uid = postjson.get('sender').get('user_id')  # 获取发送者的 QQ 号
                 message = postjson.get('raw_message')  # 获取消息内容
@@ -77,20 +78,75 @@ async def postserve(postjson):
                 case "offline_file":
                     logger.info("接收到{}离线文件：{}", postjson.get(
                         'user_id'), postjson.get('file').get('name'))
-                    add_offline_file(postjson.get('user_id'),
-                                     postjson.get('time'),
-                                     postjson.get('file').get('name'),
-                                     postjson.get('file').get('size'),
-                                     postjson.get('file').get('url'))
+                    datebase.add_offline_file(postjson.get('user_id'),
+                                              postjson.get('time'),
+                                              postjson.get('file').get('name'),
+                                              postjson.get('file').get('size'),
+                                              postjson.get('file').get('url'))
         case default:
             pass
     # 服务器处理消息
 
 
 @app.route('/', methods=["POST"])
-async def post_data():
+def serve_gocq():
     postserveThread(request.get_json()).start()
     return 'OK'
+
+
+@app.route('/add_tasks/', methods=["POST"])
+def add_tasks():
+    logger.info("接收到添加任务请求：{}", request.get_json())
+    try:
+        id = datebase.add_task(request.get_json().get('model'),
+                               None,
+                               request.get_json().get('subtype'),
+                               request.get_json().get('uid'),
+                               request.get_json().get('gid'),
+                               request.get_json().get('taskargs'))
+    except Exception as e:
+        logger.error("添加任务失败：{}", e)
+        return 'error'
+    return str(id)
+
+
+@app.route('/report_tasks_status/', methods=["POST"])
+def report_tasks():
+    status = request.get_json().get('status')
+    logger.info("接收到任务状态报告：{}", status)
+    if status == "error":
+        logger.error("任务执行失败：{}", request.get_json().get('process'))
+    elif status == "done":
+        logger.success("任务执行成功：{}", request.get_json().get('process'))
+        sendMsg(request.get_json().get('uid'), request.get_json().get('gid'),
+                "{}任务执行成功".format(request.get_json().get('id')))
+    try:
+        datebase.update_task(request.get_json().get('id'),
+                             request.get_json().get('status'),
+                             request.get_json().get('process'))
+    except Exception as e:
+        logger.error("添加任务失败：{}", e)
+        return 'error'
+    return 'OK'
+
+
+@app.route('/get_tasks/', methods=["GET"])
+def get_tasks():
+    logger.info("接收到获取任务请求")
+    model = request.args.get('model')
+    if model != None:
+        return dumps(datebase.get_task(model))
+    return "error"
+
+
+@app.route('/get_offline_file/', methods=["GET"])
+def get_offline_file():
+    logger.info("接收到获取离线文件请求")
+    uid = request.args.get('uid')
+    name = request.args.get('name')
+    if uid != None and name != None:
+        return dumps(datebase.offer_offline_file(int(uid), name))
+    return "error"
 
 
 # 服务器启动

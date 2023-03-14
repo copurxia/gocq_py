@@ -1,5 +1,6 @@
 from loguru import logger
 from cfg.botConfig import BotConfig
+from bson.objectid import ObjectId
 import pymongo
 
 config = BotConfig.load_config()
@@ -8,10 +9,11 @@ client = pymongo.MongoClient(
     config["mongdb"]["host"]+":"+str(config["mongdb"]["port"])+"/bot")
 
 db = client.bot
-coll_msg = db.msg
-coll_botmsg = db.botmsg
-coll_repeatmsg = db.repeatmsg
-coll_offline_file = db.offline_file
+coll_msg = db.msg  # 消息列表
+coll_botmsg = db.botmsg  # bot发言列表
+coll_repeatmsg = db.repeatmsg  # 重复消息列表
+coll_offline_file = db.offline_file  # 离线文件列表
+coll_task = db.task  # 任务列表
 
 
 def find_repeatmsg(gid):  # 查询重复消息
@@ -22,7 +24,7 @@ def find_repeatmsg(gid):  # 查询重复消息
     return result
 
 
-def add_repeatmsg(msg,   gid):  # 添加重复消息
+def add_repeatmsg(msg, gid):  # 添加重复消息
     coll_repeatmsg.delete_one({"gid": gid})
     msg_json = {"gid": gid, "msg": msg, "repeated": False}
     coll_repeatmsg.insert_one(msg_json)
@@ -69,6 +71,38 @@ def add_offline_file(uid, time, name, size, url):
     result = coll_offline_file.insert_one(
         {"uid": uid, "time": time, "name": name, "size": size, "url": url})
     logger.info("加载离线文件到数据库：{}", result.inserted_id)
+
+
+def offer_offline_file(uid, name):
+    result = coll_offline_file.find_one({"uid": uid, "name": name})
+    if result != None:
+        result["_id"] = str(result["_id"])
+        logger.info("查询到离线文件：{}", result["_id"])
+        return result
+    else:
+        logger.info("未查询到离线文件")
+        return None
+
+
+def add_task(model, infile, subtype, uid, gid, taskargs):
+    result = coll_task.insert_one(
+        {"model": model, "status": None, "process": "", "infile": infile,
+         "subftype": subtype, "uid": uid, "gid": gid, "taskargs": taskargs})
+    logger.info("加载任务到数据库：{}", result.inserted_id)
+    return result.inserted_id
+
+
+def update_task(taskid, status, process):
+    result = coll_task.update_one({"_id": ObjectId(taskid)}, {
+                                  "$set": {"status": status, "process": process}})
+    logger.info("更新任务状态：{}", result.matched_count)
+
+
+def get_task(model):
+    result = coll_task.find_one({"model": model, "status": None})
+    result["_id"] = str(result["_id"])
+    logger.info("查询到任务：{}", result["_id"])
+    return result
 
 
 if __name__ == '__main__':
