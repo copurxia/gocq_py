@@ -1,5 +1,6 @@
 import asyncio
 from json import dumps
+from os import path
 from flask import Flask, request
 from loguru import logger
 from gevent import pywsgi
@@ -147,6 +148,17 @@ def get_offline_file():
     if uid != None and name != None:
         return dumps(datebase.offer_offline_file(int(uid), name))
     return "error"
+
+
+@app.route('/upload_file/', methods=["POST"])
+def upload_file():
+    uploaded_file = request.files['file']
+    file_ext = path.splitext(uploaded_file.filename)[1]
+    if file_ext not in config['upload_extension']:
+        return 400
+    if uploaded_file.filename != '':
+        uploaded_file.save("statics/"+uploaded_file.filename)
+    return "OK"
 
 
 # 服务器启动

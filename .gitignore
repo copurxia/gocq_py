@@ -3,3 +3,4 @@ cfg/botconfig.yaml
 cfg/openAiConfig.yaml
 __pycache__
 poetry.lock
+statics/*
