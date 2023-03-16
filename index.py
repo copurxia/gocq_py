@@ -64,7 +64,7 @@ async def postserve(postjson):
                     logger.info("接收到@消息")
                     await msgserve(message.replace(
                         "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, gid)
-                if config["slash"] and message[0] == "/":
+                if config["slash"] and message[0] == "#":
                     logger.info("接收到/消息")
                     await msgserve(message, uid, gid)
                 if config["at"] == False and config["slash"] == False:
@@ -88,7 +88,8 @@ async def postserve(postjson):
                     if postjson.get('file').get('size') < 1024*1024*1024*5:  # 小于5G
                         logger.info("开始下载离线文件")
                         file = postjson.get('file').get('url')
-                        open(path.join(getcwd(), "statics", postjson.get('file').get('name')), 'wb').write(requests.get(file).content)
+                        open(path.join(getcwd(), "statics", postjson.get('file').get(
+                            'name')), 'wb').write(requests.get(file).content)
         case default:
             pass
     # 服务器处理消息
