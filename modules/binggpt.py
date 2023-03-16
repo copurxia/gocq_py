@@ -41,10 +41,9 @@ class bingGPT:
         try:
             respo = await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative)
             resp = respo["item"]["messages"][1]["text"]
-            print(resp)
             rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
             resp = re.sub(rmurl, '', resp)
-            # logger.info("message:{}".format(resp))
+            logger.info("bingGPT:{}".format(resp))
         except Exception as e:
             resp = "error"
             logger.warning("{} 出现异常：{}".format(self.name, e))
