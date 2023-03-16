@@ -25,6 +25,7 @@ class chatGPTv3:
             self.thinking = Chatbot(
                 api_key=self.config["api_key"],
                 proxy=self.config["proxy"],
+                engine="gpt-3.5-turbo",
                 max_tokens=100,
             )
             logger.info("chatGPT: 初始化成功")
@@ -42,7 +43,9 @@ class chatGPTv3:
         resp = ""
         async with self.lock:
             try:
-                resp = await self.thinking.ask(message)
+                resps = self.thinking.ask_stream(message)
+                for i in resps:
+                    resp += i
                 logger.info("chatGPT: {}".format(resp))
             except Exception as e:
                 resp = "error"
@@ -55,4 +58,4 @@ class chatGPTv3:
 if __name__ == "__main__":
     thinking = chatGPTv3()
     thinking.activate()
-    asyncio.run(thinking.response("你好"))
+    asyncio.run(thinking.response("如何评价早八"))
