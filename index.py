@@ -27,10 +27,7 @@ class postserveThread(threading.Thread):
         self.postjson = postjson
 
     def run(self):
-        try:
-            asyncio.run(postserve(self.postjson))
-        except Exception as e:
-            logger.error("服务器处理消息失败：{}", e)
+        asyncio.run(postserve(self.postjson))
 
 
 # 处理线程函数
