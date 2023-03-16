@@ -77,7 +77,7 @@ async def keyresponse(msg, uid, gid):  # 关键词回应
     if thinking.status == False:
         thinking.activate()
     logger.info("使用模块：{}".format(thinking.name))
-    if thinking.args != True:
+    if thinking.args == None:
         resp = await thinking.response(msg)
     else:
         resp = await thinking.response(msg, uid, gid)
