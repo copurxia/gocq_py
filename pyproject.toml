@@ -18,6 +18,7 @@ edgegpt = "^0.0.56.1"
 revchatgpt = "^3.0.9"
 tls-client = "^0.1.8"
 pymongo = "^4.3.3"
+tencentcloud-sdk-python-asr = "^3.0.851"
 
 [build-system]
 requires = ["poetry-core"]

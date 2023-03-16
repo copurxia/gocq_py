@@ -73,6 +73,16 @@ def add_offline_file(uid, time, name, size, url):
     logger.info("加载离线文件到数据库：{}", result.inserted_id)
 
 
+def find_offline_file(uid, name):
+    result = coll_offline_file.find_one({"uid": int(uid), "name": name})
+    if result != None:
+        logger.info("查询到离线文件：{}", result["_id"])
+        return True
+    else:
+        logger.info("未查询到离线文件")
+        return False
+
+
 def offer_offline_file(uid, name):
     result = coll_offline_file.find_one({"uid": uid, "name": name})
     if result != None:

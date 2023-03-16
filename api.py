@@ -106,8 +106,8 @@ async def msgserve(msg, uid, gid):
 
 # 测试
 if __name__ == "__main__":
-    pass
-    #msgserve("测试", "1935576264", None)
+    #asyncio.run(msgserve("/asr 新录音 30.m4a", "测试私聊", None))
     #msgserve("测试", None, "测试群组")
     #c1c("测试私聊", "测试群组")
-    asyncio.run(sendMsg("测试&测试", "测试私聊", "测试群组"))
+    #asyncio.run(sendMsg("测试&测试", "测试私聊", "测试群组"))
+    pass

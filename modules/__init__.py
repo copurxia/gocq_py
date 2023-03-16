@@ -1,9 +1,6 @@
 from loguru import logger
 from cfg.botConfig import BotConfig
-from modules import binggpt
-from modules import caiyun
-#import chatgptv1
-from modules import chatgptv3
+from modules import binggpt, caiyun, chatgptv3, asr
 
 config = BotConfig.load_config()
 
@@ -12,6 +9,7 @@ thinking = None
 bingGPT = binggpt.bingGPT()
 CaiYun = caiyun.caiyun()
 chatGPTv3 = chatgptv3.chatGPTv3()
+Asr = asr.Asr()
 
 
 def loadDefault():  # 加载默认模块
@@ -41,12 +39,21 @@ def keywords(msg):  # 关键词判断
         if keywords in msg:
             thinking = chatGPTv3
             Default = False
+    for keywords in Asr.keyword:
+        if keywords in msg:
+            thinking = Asr
+            Default = False
     if Default == True:
         loadDefault()
 
 
-def permission_ver(module, uid, gid):  # 权限验证
+def permission_ver(module, ouid, ogid):  # 权限验证
+    uid = int(ouid)
+    if uid in config["permission"]["superUser"]:
+        logger.info("权限验证通过：{}-{}".format(uid, module))
+        return True
     if gid != None:
+        gid = int(ogid)
         for i in config["permission"]["group"]:
             if i["gid"] == gid and module in i["modules"]:
                 logger.info("权限验证通过：{}-{}".format(gid, module))
@@ -57,7 +64,7 @@ def permission_ver(module, uid, gid):  # 权限验证
             if i["uid"] == uid and module in i["modules"]:
                 logger.info("权限验证通过：{}-{}".format(uid, module))
                 return True
-    #logger.warning("权限验证失败：{}-{}".format(uid, module))
+    logger.warning("权限验证失败：{}-{}".format(uid, module))
     return False
 
 
@@ -70,5 +77,8 @@ async def keyresponse(msg, uid, gid):  # 关键词回应
     if thinking.status == False:
         thinking.activate()
     logger.info("使用模块：{}".format(thinking.name))
-    resp = await thinking.response(msg)
+    if thinking.args != True:
+        resp = await thinking.response(msg)
+    else:
+        resp = await thinking.response(msg, uid, gid)
     return resp
