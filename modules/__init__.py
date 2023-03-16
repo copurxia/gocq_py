@@ -52,7 +52,7 @@ def permission_ver(module, ouid, ogid):  # 权限验证
     if uid in config["permission"]["superUser"]:
         logger.info("权限验证通过：{}-{}".format(uid, module))
         return True
-    if gid != None:
+    if ogid != None:
         gid = int(ogid)
         for i in config["permission"]["group"]:
             if i["gid"] == gid and module in i["modules"]:
