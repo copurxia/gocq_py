@@ -42,7 +42,9 @@ class chatGPTv3:
         resp = ""
         async with self.lock:
             try:
-                resp = self.thinking.ask(message)
+                resps = self.thinking.ask(message)
+                for i in resps:
+                    logger.info("chatGPT: {}".format(i))
                 logger.info("chatGPT: {}".format(resp))
             except Exception as e:
                 resp = "error"
