@@ -45,6 +45,7 @@ class chatGPTv3:
                 resps = self.thinking.ask(message)
                 for i in resps:
                     logger.info("chatGPT: {}".format(i))
+                    resp += i
                 logger.info("chatGPT: {}".format(resp))
             except Exception as e:
                 resp = "error"
