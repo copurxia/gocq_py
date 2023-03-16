@@ -87,10 +87,10 @@ def find_latest_file(uid):
     result = coll_offline_file.find_one({"uid": int(uid)})
     if result != None:
         logger.info("查询到离线文件：{}", result["_id"])
-        return True
+        return result
     else:
         logger.info("未查询到离线文件")
-        return False
+        return None
 
 
 def offer_offline_file(uid, name):
