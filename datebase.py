@@ -84,7 +84,9 @@ def find_offline_file(uid, name):
 
 
 def find_latest_file(uid):
-    result = coll_offline_file.find_one({"uid": int(uid)})
+    results = coll_offline_file.find(
+        {"uid": int(uid)}).sort('_id', -1).limit(1)
+    result = next(results)
     if result != None:
         logger.info("查询到离线文件：{}", result["_id"])
         return result
