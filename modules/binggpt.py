@@ -38,16 +38,16 @@ class bingGPT:
     async def response(self, message) -> str:
         if (self.thinking == None):
             return ""
-        try:
-            respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative))
-            resp = respo["item"]["messages"][1]["adaptiveCards"][0]["body"][0]["text"]
-            rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
-            resp = re.sub(rmurl, '', resp)
+        # try:
+        respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative))
+        resp = respo["item"]["messages"][1]["adaptiveCards"][0]["body"][0]["text"]
+        rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
+        resp = re.sub(rmurl, '', resp)
             # logger.info("message:{}".format(resp))
-        except Exception as e:
-            resp = "error"
-            logger.warning("{} 出现异常：{}".format(self.name, e))
-            self.status = False
+        # except Exception as e:
+        #    resp = "error"
+        #    logger.warning("{} 出现异常：{}".format(self.name, e))
+        #    self.status = False
         return resp
 
     async def close(self):
