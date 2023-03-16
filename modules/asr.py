@@ -132,7 +132,7 @@ class Asr:
             # 返回的resp是一个DescribeTaskStatusResponse的实例，与请求对象对应
             resp = client.DescribeTaskStatus(req)
             # 输出json格式的字符串回包
-            print(resp.to_json_string())
+            return json.loads(resp.to_json_string())
 
         except TencentCloudSDKException as err:
             logger.warning("{} 出现异常：{}".format(self.name, err))
