@@ -61,12 +61,13 @@ class Asr:
                                 result["Data"]["ErrorMsg"]))
                         elif result["Data"]["Status"] == 2:
                             print(len(result["Data"]["ResultDetail"]))
-                            print(result["Data"]["ResultDetail"][0])
-                            print(result["Data"]["ResultDetail"][1])
+                            result_format=""
+                            for i in result["Data"]["ResultDetail"]:
+                                result_format += "[{},{}]{}\n".format(i["StartMs"],i["EndMs"],i["FinalSentence"])
                             resp = "识别成功\n{}".format(
                                 "{}/download/{}".format(self.config["domain"], quote(str(taskid)+".txt")))
                             with open('statics/'+str(taskid)+".txt", 'w') as f:
-                                f.write(result["Data"]["Result"])
+                                f.write(result_format)
             except Exception as e:
                 resp = "看不懂了啦！"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
