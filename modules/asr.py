@@ -60,7 +60,7 @@ class Asr:
                             logger.warning("失败原因:{}".format(
                                 result["Data"]["ErrorMsg"]))
                         elif result["Data"]["Status"] == 2:
-                            print(result["Data"]["ResultDetail"].length)
+                            print(len(result["Data"]["ResultDetail"]))
                             print(result["Data"]["ResultDetail"][0])
                             print(result["Data"]["ResultDetail"][1])
                             resp = "识别成功\n{}".format(
