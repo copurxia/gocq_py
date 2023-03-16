@@ -44,6 +44,8 @@ class Asr:
                         file = find_latest_file(uid)
                         if file != None:
                             filename = file["name"]
+                            logger.info(
+                                "文件不存在，使用最近一次上传的文件:{}".format(filename))
                     else:
                         filename = message[1:]
                     if filename != None:
