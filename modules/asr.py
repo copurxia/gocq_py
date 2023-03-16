@@ -61,7 +61,7 @@ class Asr:
                                 result["Data"]["ErrorMsg"]))
                         elif result["Data"]["Status"] == 2:
                             resp = "识别成功\n{}".format(
-                                "{}/download/{}".format(self.config["domain"], quote(taskid+".txt")))
+                                "{}/download/{}".format(self.config["domain"], quote(str(taskid)+".txt")))
                             with open('statics/'+str(taskid)+".txt", 'w') as f:
                                 f.write(result["Data"]["Result"])
             except Exception as e:
