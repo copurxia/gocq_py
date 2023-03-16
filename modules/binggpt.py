@@ -39,8 +39,9 @@ class bingGPT:
         if (self.thinking == None):
             return ""
         try:
-            respo = (await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative))
-            resp = respo["item"]["messages"][1]["adaptiveCards"][0]["body"][0]["text"]
+            respo = await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative)
+            resp = respo["item"]["messages"][1]["text"]
+            print(resp)
             rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
             resp = re.sub(rmurl, '', resp)
             # logger.info("message:{}".format(resp))
