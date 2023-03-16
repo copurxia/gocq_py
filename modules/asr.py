@@ -6,7 +6,7 @@ from loguru import logger
 import asyncio
 from cfg.botConfig import BotConfig
 from urllib.parse import quote
-from datebase import find_offline_file
+from datebase import find_offline_file, find_latest_file
 from tencentcloud.common import credential
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
@@ -41,8 +41,13 @@ class Asr:
                 if gid == None:
                     if not find_offline_file(uid, message[1:]):
                         resp = "文件不存在"
+                        file = find_latest_file(uid)
+                        if file != None:
+                            filename = file["name"]
                     else:
-                        taskid = self.createTask(message[1:])
+                        filename = message[1:]
+                    if filename != None:
+                        taskid = self.createTask(filename)
                         logger.info("创建任务:{}".format(taskid))
                         result = self.getTask(taskid)
                         while result["Data"]["Status"] == 1 or result["Data"]["Status"] == 0:
@@ -57,7 +62,6 @@ class Asr:
                                 "{}/download/{}".format(self.config["domain"], quote(taskid+".txt")))
                             with open('statics/'+str(taskid)+".txt", 'w') as f:
                                 f.write(result["Data"]["Result"])
-
             except Exception as e:
                 resp = "看不懂了啦！"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
