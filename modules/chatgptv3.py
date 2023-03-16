@@ -42,7 +42,7 @@ class chatGPTv3:
         resp = ""
         async with self.lock:
             try:
-                resp = self.thinking.ask_stream(message)
+                resp = await self.thinking.ask(message)
                 logger.info("chatGPT: {}".format(resp))
             except Exception as e:
                 resp = "error"
