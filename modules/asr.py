@@ -42,13 +42,11 @@ class Asr:
                     if not find_offline_file(uid, message[1:]):
                         resp = "文件不存在"
                     else:
-                        #taskid = self.createTask(message[1:])
-                        # logger.info("创建任务:{}".format(taskid))
-                        #result = self.getTask(taskid)
-                        # while result["Data"]["Status"] == 1 or result["Data"]["Status"] == 0:
-                        #    result = self.getTask(taskid)
-                        result = {"Data": {"Status": 2, "Result": "测试"}}
-                        taskid = 666
+                        taskid = self.createTask(message[1:])
+                        logger.info("创建任务:{}".format(taskid))
+                        result = self.getTask(taskid)
+                        while result["Data"]["Status"] == 1 or result["Data"]["Status"] == 0:
+                            result = self.getTask(taskid)
                         if result["Data"]["Status"] == 4:
                             resp = "识别失败"
                             logger.warning("任务失败")
