@@ -23,9 +23,11 @@ class chatGPTv3:
             return False
         try:
             self.thinking = Chatbot(
-                api_key=self.config["api_key"])
+                api_key=self.config["api_key"],
+                proxy=self.config["proxy"],
+                max_tokens=100,
+            )
             logger.info("chatGPT: 初始化成功")
-            # self.thinking.clear_conversations()
         except Exception as e:
             logger.warning("{} 初始化失败：{}".format(self.name, e))
             return False

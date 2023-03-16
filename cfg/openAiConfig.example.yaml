@@ -1,9 +1,3 @@
-email: a@b.c # this is a fake email, you need to get your own email from openai.com
-password: Adjgg # this is a fake password, you need to get your own password from openai.com
-sessionToken: dsfhfjgj # this is a fake token, you need to get your own token from openai.com
 temperature: 0.5
-proxy: http://192.168.10.76:1077
-paid: "False"
-insecureAuth: "False"
-api_key: fjhgddgjk # this is a fake token, you need to get your own token from openai.com
-access_token: fhfjdjjg # this is a fake token, you need to get your own token from openai.com
+proxy: socks5://127.0.0.1:1077 #代理
+api_key: sk-8I4cvhbZWuVHmQIj3p6DK #密钥
