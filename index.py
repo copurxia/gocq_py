@@ -63,7 +63,7 @@ async def postserve(postjson):
                         "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, gid)
                 if config["slash"] and message[0] == "#":
                     logger.info("接收到/消息")
-                    await msgserve(message, uid, gid)
+                    await msgserve(message[1:], uid, gid)
                 if config["at"] == False and config["slash"] == False:
                     await msgserve(message, uid, gid)
         case "notice":
