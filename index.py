@@ -1,7 +1,8 @@
 import asyncio
+import requests
 from json import dumps
-from os import path
-from flask import Flask, request
+from os import path, getcwd
+from flask import Flask, request, send_from_directory, make_response
 from loguru import logger
 from gevent import pywsgi
 from api import msgserve, repeat, c1c, sendMsg
@@ -84,6 +85,10 @@ async def postserve(postjson):
                                               postjson.get('file').get('name'),
                                               postjson.get('file').get('size'),
                                               postjson.get('file').get('url'))
+                    if postjson.get('file').get('size') < 1024*1024*1024*5:  # 小于5G
+                        logger.info("开始下载离线文件")
+                        file = postjson.get('file').get('url')
+                        open(path.join(getcwd(), "statics", postjson.get('file').get('name')), 'wb').write(requests.get(file).content)
         case default:
             pass
     # 服务器处理消息
@@ -148,6 +153,17 @@ def get_offline_file():
     if uid != None and name != None:
         return dumps(datebase.offer_offline_file(int(uid), name))
     return "error"
+
+
+@app.route("/download/<filename>", methods=['GET'])
+def download_file(filename):
+    # 需要知道2个参数, 第1个参数是本地目录的path, 第2个参数是文件名(带扩展名)
+    directory = getcwd()+"/statics/"  # 假设在当前目录
+    response = make_response(send_from_directory(
+        directory, filename, as_attachment=True))
+    response.headers["Content-Disposition"] = "attachment; filename={}".format(
+        filename.encode().decode('latin-1'))
+    return response
 
 
 @app.route('/upload_file/', methods=["POST"])
