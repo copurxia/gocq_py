@@ -60,6 +60,9 @@ class Asr:
                             logger.warning("失败原因:{}".format(
                                 result["Data"]["ErrorMsg"]))
                         elif result["Data"]["Status"] == 2:
+                            print(result["Data"]["ResultDetail"].length)
+                            print(result["Data"]["ResultDetail"][0])
+                            print(result["Data"]["ResultDetail"][1])
                             resp = "识别成功\n{}".format(
                                 "{}/download/{}".format(self.config["domain"], quote(str(taskid)+".txt")))
                             with open('statics/'+str(taskid)+".txt", 'w') as f:
