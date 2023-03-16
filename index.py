@@ -27,13 +27,13 @@ class postserveThread(threading.Thread):
         self.postjson = postjson
 
     def run(self):
-        asyncio.run(postserve(self.postjson))
+        postserve(self.postjson)
 
 
 # 处理线程函数
 
 
-async def postserve(postjson):
+def postserve(postjson):
     # 无视心跳包
     if postjson.get('post_type') == "meta_event" and postjson.get('meta_event_type') == "heartbeat":
         return 'OK'
@@ -48,8 +48,8 @@ async def postserve(postjson):
                 uid = postjson.get('sender').get('user_id')  # 获取发送者的 QQ 号
                 message = postjson.get('raw_message')  # 获取消息内容
                 logger.info("{}发来：{}", uid, message[:20])
-                await msgserve(message.replace(
-                    "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, None)
+                asyncio.run(msgserve(message.replace(
+                    "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, None))
             elif postjson.get('message_type') == 'group':  # 如果是群聊信息
                 gid = postjson.get('group_id')  # 获取群号
                 uid = postjson.get('sender').get('user_id')  # 获取发送者的 QQ 号
@@ -59,13 +59,13 @@ async def postserve(postjson):
                     repeat(message, uid, gid)
                 if config["at"] and "[CQ:at,qq="+str(config["gocq"]["qq"])+"]" in message:
                     logger.info("接收到@消息")
-                    await msgserve(message.replace(
-                        "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, gid)
+                    asyncio.run(msgserve(message.replace(
+                        "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, gid))
                 if config["slash"] and message[0] == "#":
                     logger.info("接收到/消息")
-                    await msgserve(message[1:], uid, gid)
+                    asyncio.run(msgserve(message[1:], uid, gid))
                 if config["at"] == False and config["slash"] == False:
-                    await msgserve(message, uid, gid)
+                    asyncio.run(msgserve(message, uid, gid))
         case "notice":
             #logger.info("接收到通知：{}", postjson)
             match postjson.get('notice_type'):
