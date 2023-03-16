@@ -18,7 +18,6 @@ edgegpt = "^0.0.56.1"
 revchatgpt = "^3.0.9"
 tls-client = "^0.1.8"
 pymongo = "^4.3.3"
-bson = "^0.5.10"
 tencentcloud-sdk-python = "^3.0.852"
 tencentcloud-sdk-python-asr = "^3.0.851"
 
