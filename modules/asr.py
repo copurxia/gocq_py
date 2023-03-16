@@ -52,7 +52,7 @@ class Asr:
                         result = self.getTask(taskid)
                         while result["Data"]["Status"] == 1 or result["Data"]["Status"] == 0:
                             result = self.getTask(taskid)
-                        if result["Data"]["Status"] == 4:
+                        if result["Data"]["Status"] == 3:
                             resp = "识别失败"
                             logger.warning("任务失败")
                             logger.warning("失败原因:{}".format(
