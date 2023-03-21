@@ -9,7 +9,6 @@ from api import msgserve, repeat, c1c, sendMsg
 from modules import permission_ver
 import datebase
 from cfg.botConfig import BotConfig
-import threading
 
 # 加载配置文件
 try:
@@ -21,19 +20,10 @@ except Exception as e:
 app = Flask(__name__)
 
 
-class postserveThread(threading.Thread):
-    def __init__(self, postjson):
-        threading.Thread.__init__(self)
-        self.postjson = postjson
-
-    def run(self):
-        postserve(self.postjson)
-
-
 # 处理线程函数
 
 
-def postserve(postjson):
+async def postserve(postjson):
     # 无视心跳包
     if postjson.get('post_type') == "meta_event" and postjson.get('meta_event_type') == "heartbeat":
         return 'OK'
@@ -94,7 +84,7 @@ def postserve(postjson):
 
 @app.route('/', methods=["POST"])
 def serve_gocq():
-    postserveThread(request.get_json()).start()
+    asyncio.run(postserve(request.get_json()))
     return 'OK'
 
 
