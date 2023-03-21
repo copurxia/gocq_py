@@ -83,8 +83,8 @@ async def postserve(postjson):
 
 
 @app.route('/', methods=["POST"])
-def serve_gocq():
-    asyncio.run(postserve(request.get_json()))
+async def serve_gocq():
+    await postserve(request.get_json())
     return 'OK'
 
 
