@@ -61,7 +61,7 @@ def postserve(postjson):
                     logger.info("接收到@消息")
                     asyncio.run(msgserve(message.replace(
                         "[CQ:at,qq="+str(config["gocq"]["qq"])+"]", ""), uid, gid))
-                if config["slash"] and message[0] == "#":
+                if config["slash"] and message[0] == "/":
                     logger.info("接收到/消息")
                     asyncio.run(msgserve(message[1:], uid, gid))
                 if config["at"] == False and config["slash"] == False:
