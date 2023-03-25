@@ -39,7 +39,9 @@ class bingGPT:
         if (self.thinking == None):
             return ""
         try:
-            respo = await self.thinking.ask(prompt=message, conversation_style=ConversationStyle.creative)
+            respo = await self.thinking.ask(prompt=message,
+                                            conversation_style=ConversationStyle.creative,
+                                            wss_link="wss://sydney.bing.com/sydney/ChatHub")
             resp = respo["item"]["messages"][1]["text"]
             rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
             resp = re.sub(rmurl, '', resp)
