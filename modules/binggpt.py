@@ -43,8 +43,8 @@ class bingGPT:
                                             conversation_style=ConversationStyle.creative,
                                             wss_link="wss://sydney.bing.com/sydney/ChatHub")
             resp = respo["item"]["messages"][1]["text"]
-            rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
-            resp = re.sub(rmurl, '', resp)
+            #rmurl = re.compile(r'[http|https]*://[a-zA-Z0-9.?/&=:]*', re.S)
+            #resp = re.sub(rmurl, '', resp)
             logger.info("bingGPT:{}".format(resp))
         except Exception as e:
             resp = "error"
