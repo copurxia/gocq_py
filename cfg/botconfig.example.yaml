@@ -28,6 +28,8 @@ mongdb: #mongodb数据库配置
   user: "bot" #数据库用户名
   pwd: "47795485" #数据库密码
 permission: #权限设置
+  superUser: #超级用户
+    - 123456
   user: #用户列表
     - uid: 123456
       modules: #拥有的模块列表
