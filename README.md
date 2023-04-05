@@ -24,8 +24,8 @@ gocq、mongodb需要自行安装
 
 先启动本项目再启动gocq
 
-bing与chatgpt使用[acheong08](https://github.com/acheong08)的方案，具体配置文件可参考原项目生成
-
+bing与chatgpt使用[acheong08](https://github.com/acheong08)的方案，具具体配置文件可参考原项目生成
+配置文件名为botconfig.yaml和openAiConfig.yaml
 彩云小译的API需要自行申请
 
 gocq的配置文件中需要添加
