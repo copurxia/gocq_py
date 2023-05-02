@@ -18,7 +18,7 @@ class bingGPT:
         self.status = False
         self.keyword = ["/bing", "/必应"]
 
-    def activate(self):
+    async def activate(self):
         # 判断是否存在cookies文件
         cookiesPath = os.path.join(os.path.dirname(
             __file__), "../cfg", "bingCookies.json")
@@ -27,7 +27,7 @@ class bingGPT:
                 "bingCookies.json 配置文件未找到！请配置 Bing 到 {}".format(cookiesPath))
             return False
         try:
-            self.thinking = Chatbot(cookiePath=cookiesPath)
+            self.thinking = await Chatbot.create(cookiePath=cookiesPath)
         except Exception as e:
             logger.warning("{} 初始化失败：{}".format(self.name, e))
             return False
