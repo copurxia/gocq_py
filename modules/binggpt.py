@@ -38,6 +38,7 @@ class bingGPT:
     async def response(self, message) -> str:
         logger.info("bingGPT处理对话")
         if (self.thinking == None):
+            logger.error("bingGPT未初始化！")
             return ""
         try:
             respo = await self.thinking.ask(prompt=message,
