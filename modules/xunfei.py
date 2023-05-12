@@ -5,8 +5,10 @@ import base64
 import json
 import copy
 import sys
-from cfg.botConfig import BotConfig
+from cfg.config import config
 # import userinfo
+
+config = config.load_config()
 
 # 定义全局变量
 chat_id = None
@@ -19,7 +21,7 @@ headers = {
     'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Connection': 'keep-alive',
-    'Cookie': BotConfig["xunfei"]["cookie"],
+    'Cookie': config["xunfei"]["cookie"],
     'Origin': 'https://xinghuo.xfyun.cn',
     'Referer': 'https://xinghuo.xfyun.cn/desk',
     'sec-ch-ua': '"Chromium";v="112", "Google Chrome";v="112", "Not:A-Brand";v="99"',
@@ -89,10 +91,10 @@ def decode(text):
 def ask_question(question, chat_id):
     url = "https://xinghuo.xfyun.cn/iflygpt/u/chat_message/chat"
     payload = {
-        'fd': BotConfig["fd"],
+        'fd': config["fd"],
         'chatId': chat_id,
         'text': question,
-        'GtToken': BotConfig["GtToken"],
+        'GtToken': config["GtToken"],
         'clientType': '1'
     }
     response = requests.request(
