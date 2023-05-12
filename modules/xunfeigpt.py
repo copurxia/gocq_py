@@ -1,6 +1,6 @@
 # 该分裂思维正用于chatgpt
 
-from xunfei import generate_chat_id, ask_question, set_name
+from modules.xunfei import generate_chat_id, ask_question, set_name
 from loguru import logger
 import asyncio
 
