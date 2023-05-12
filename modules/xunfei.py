@@ -5,10 +5,10 @@ import base64
 import json
 import copy
 import sys
-from cfg.config import config
+from cfg.botConfig import BotConfig
 # import userinfo
 
-config = config.load_config()
+config = BotConfig.load_config()
 
 # 定义全局变量
 chat_id = None
