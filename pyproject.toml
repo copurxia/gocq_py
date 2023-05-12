@@ -20,6 +20,9 @@ tls-client = "^0.1.8"
 pymongo = "^4.3.3"
 tencentcloud-sdk-python = "^3.0.852"
 tencentcloud-sdk-python-asr = "^3.0.851"
+langdetect = "^1.0.9"
+websocket = "^0.2.1"
+websocket-client = "0.57.0"
 
 [build-system]
 requires = ["poetry-core"]
