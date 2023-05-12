@@ -35,6 +35,7 @@ class XunfeiGPT:
                 resp = "error"
                 logger.warning("{} 出现异常：{}".format(self.name, e))
                 self.status = False
+                self.new = True
         return resp
 
 
