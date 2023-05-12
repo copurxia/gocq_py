@@ -26,16 +26,17 @@ class XunfeiGPT:
             message = message.replace(i, "")
         resp = ""
         async with self.lock:
-            try:
-                resp = ask_question(self.chat_id, message)
-                if self.new:
-                    resp = set_name(message, self.chat_id)
-                    self.new = False
-            except Exception as e:
-                resp = "error"
-                logger.warning("{} 出现异常：{}".format(self.name, e))
-                self.status = False
-                self.new = True
+            #try:
+            resp = ask_question(self.chat_id, message)
+            logger.info("回复消息:{}".format(resp))
+            if self.new:
+                resp = set_name(message, self.chat_id)
+                self.new = False
+            #except Exception as e:
+            #    resp = "error"
+            #    logger.warning("{} 出现异常：{}".format(self.name, e))
+            #    self.status = False
+            #    self.new = True
         return resp
 
 
