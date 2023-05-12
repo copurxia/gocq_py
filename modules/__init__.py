@@ -1,6 +1,6 @@
 from loguru import logger
 from cfg.botConfig import BotConfig
-from modules import binggpt, caiyun, chatgptv3, asr
+from modules import binggpt, caiyun, chatgptv3, asr, xunfeigpt
 
 config = BotConfig.load_config()
 
@@ -10,6 +10,7 @@ bingGPT = binggpt.bingGPT()
 CaiYun = caiyun.caiyun()
 chatGPTv3 = chatgptv3.chatGPTv3()
 Asr = asr.Asr()
+Xunfei = xunfeigpt.XunfeiGPT()
 
 
 def loadDefault():  # 加载默认模块
@@ -20,6 +21,8 @@ def loadDefault():  # 加载默认模块
         thinking = CaiYun
     elif config["default"] == chatGPTv3.name:
         thinking = chatGPTv3
+    elif config["default"] == Xunfei.name:
+        thinking = Xunfei
     else:
         logger.warning("未知的默认模块：{}".format(config["default"]))
 
@@ -43,6 +46,10 @@ def keywords(msg):  # 关键词判断
         if keywords in msg:
             thinking = Asr
             Default = False
+    for keywords in Xunfei.keyword:
+        if keywords in msg:
+            thinking = Xunfei
+            Default = False
     if Default == True:
         loadDefault()
 
@@ -58,7 +65,7 @@ def permission_ver(module, ouid, ogid):  # 权限验证
             if i["gid"] == gid and module in i["modules"]:
                 logger.info("权限验证通过：{}-{}".format(gid, module))
                 return True
-    #logger.warning("权限验证失败：{}-{}".format(gid, module))
+    # logger.warning("权限验证失败：{}-{}".format(gid, module))
     if uid != None:
         for i in config["permission"]["user"]:
             if i["uid"] == uid and module in i["modules"]:
