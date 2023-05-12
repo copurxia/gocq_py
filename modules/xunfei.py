@@ -91,10 +91,10 @@ def decode(text):
 def ask_question(question, chat_id):
     url = "https://xinghuo.xfyun.cn/iflygpt/u/chat_message/chat"
     payload = {
-        'fd': config["fd"],
+        'fd': config["xunfei"]["fd"],
         'chatId': chat_id,
         'text': question,
-        'GtToken': config["GtToken"],
+        'GtToken': config["xunfei"]["GtToken"],
         'clientType': '1'
     }
     response = requests.request(
